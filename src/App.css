@@ -1,0 +1,61 @@
+body{
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+}
+a{
+  color: inherit;
+  text-decoration: none;
+}
+a:hoverd{
+  text-decoration: underline;
+}
+header{
+  background-color: #282c34;
+  padding: 20px;
+  text-align: center;
+  color: white;
+}
+.header nav a{
+  margin: 0 10px;
+  color: white;
+}
+
+.about-section{
+  padding: 50px;
+  text-align: center;
+  background-color: #f4f4f4;
+}
+.about-section h2, .projects-section h2, .contact-section h2{
+  font-size: 36px;
+  margin-bottom: 20px;
+}
+
+.projects-section{
+  padding: 50px;
+  text-align: center;
+}
+.projects-section .project-item{
+  margin-bottom: 30px;
+}
+.projects-list .project-item h3{
+  margin-bottom: 30px;
+}
+.projects-list .project-item a{
+  color: #1e29f4;
+}
+.contact-section{
+  padding: 50px;
+  text-align: center;
+}
+.contact-section a{
+  color: #4421f6;
+  text-decoration: none;
+}
+.footer{
+  background-color: #282c34;
+  color: white;
+  text-align: center;
+  padding: 20px;
+}
