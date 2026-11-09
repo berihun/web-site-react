@@ -2,23 +2,21 @@ import "./App.css";
 import { useState, useEffect } from "react";
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [time, setTime] = useState(new Date());
 
   useEffect(() => {
-    // Fixed: Update document title to reflect the actual current count
-    console.log(`useEffect Triggered`);
-  }, [count]);
+    const timerId = setInterval(() => setTime(new Date()), 1000);
+    return () => clearInterval(timerId);
+  }, []);
 
-  const incrementCount = () => {
-    setCount(count + 1);
-  };
-
+  const formattedTime = time.toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
   return (
-    <div>
-      <h1>useEffect Hook</h1>
-      {/* Added this to display the count on the screen */}
-      <p>Current Count: {count}</p>
-      <button onClick={incrementCount}>Increment</button>
+    <div className="clock-container">
+      <div className="clock">{formattedTime}</div>
     </div>
   );
 }
