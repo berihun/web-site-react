@@ -1,45 +1,47 @@
 import "./App.css";
-import { useState, useRef } from "react";
+import { useState, useRef, createContext, useContext } from "react";
+
+const ThemeContext = createContext("light");
 
 function App() {
-  // --- prop drilling---------------------
-  // - App =DATA
-  //  - ComponentA
-  //   - ComponentB
-  //    - ThemedComponent == NEEDS THEME
-  // --------end
-
   // props drilling is difficult to maintain and
   // not recommended especially if the application complexity is growing
   // so useContext resolves this issue
+  const [theme, setTheme] = useState("light");
+  const toggleTheme = () => {
+    setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
+  };
 
-  const theme = "dark";
   return (
-    <div style={{ border: "2px solid black", padding: "20px" }}>
-      <h2>App(Parent)</h2>
-      <ComponentA theme={theme} />
-    </div>
+    <ThemeContext.Provider value={theme}>
+      <div style={{ border: "2px solid black", padding: "20px" }}>
+        <h2>App(Parent)</h2>
+        <button onClick={toggleTheme}>Tggle Click</button>
+        <ComponentA />
+      </div>
+    </ThemeContext.Provider>
   );
 }
-function ComponentA({ theme }) {
+function ComponentA() {
   return (
     <div style={{ border: "2px solid black", padding: "20px" }}>
       <h2>ComponentA(Child)</h2>
-      <ComponentB theme={theme} />
+      <ComponentB />
     </div>
   );
 }
 
-function ComponentB({ theme }) {
+function ComponentB() {
   return (
     <div style={{ border: "2px solid black", padding: "20px" }}>
       <h2>ComponentB(Grand Child)</h2>
-      <ThemedComponent theme={theme} />
+      <ThemedComponent />
     </div>
   );
 }
 
-function ThemedComponent({ theme }) {
+function ThemedComponent() {
+  const theme = useContext(ThemeContext);
   return (
     <div style={{ border: "2px solid black", padding: "20px" }}>
       <h2>ThemedComponent(Great Grand Child)</h2>
