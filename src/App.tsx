@@ -1,53 +1,23 @@
 import "./App.css";
-import { useState, useRef, createContext, useContext } from "react";
+import React from "react";
+import useCounter from "./useCounter";
 
-const ThemeContext = createContext("light");
+// Custom hooks in react are functions
+// that lets you reuse logic across multiple components.
+// Start with "use"
+// so useContext resolves this issue
 
 function App() {
-  // props drilling is difficult to maintain and
-  // not recommended especially if the application complexity is growing
-  // so useContext resolves this issue
-  const [theme, setTheme] = useState("light");
-  const toggleTheme = () => {
-    setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
-  };
+  const { count, increment, decrement, reset } = useCounter(0);
 
   return (
-    <ThemeContext.Provider value={theme}>
-      <div style={{ border: "2px solid black", padding: "20px" }}>
-        <h2>App(Parent)</h2>
-        <button onClick={toggleTheme}>Tggle Click</button>
-        <ComponentA />
-      </div>
-    </ThemeContext.Provider>
-  );
-}
-function ComponentA() {
-  return (
     <div style={{ border: "2px solid black", padding: "20px" }}>
-      <h2>ComponentA(Child)</h2>
-      <ComponentB />
+      <h2>Counter: {count}</h2>
+      <button onClick={increment}>Increment </button>
+      <button onClick={decrement}>Decrement </button>
+      <button onClick={reset}>Reset </button>
     </div>
   );
 }
 
-function ComponentB() {
-  return (
-    <div style={{ border: "2px solid black", padding: "20px" }}>
-      <h2>ComponentB(Grand Child)</h2>
-      <ThemedComponent />
-    </div>
-  );
-}
-
-function ThemedComponent() {
-  const theme = useContext(ThemeContext);
-  return (
-    <div style={{ border: "2px solid black", padding: "20px" }}>
-      <h2>ThemedComponent(Great Grand Child)</h2>
-      The current theme is :{theme}
-    </div>
-  );
-  return <div>The current theme is :{theme} </div>;
-}
 export default App;
