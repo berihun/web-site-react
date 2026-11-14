@@ -1,71 +1,98 @@
 import "./App.css";
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import { useForm } from "react-hook-form";
 
 function App() {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch,
+    reset,
+  } = useForm({
+    mode: "onChange",
   });
-  const [errors, setErrors] = useState({});
-
-  const validateData = () => {
-    const newErrors = {};
-    if (!formData.name.trim()) {
-      newErrors.name = "Name is required!";
-    }
-    return newErrors;
+  const onSubmit = (data) => {
+    console.log("data", data);
+    // reset();
   };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const validationErrors = validateData();
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-    } else {
-      console.log("Form data submitted ", formData);
-    }
+  const existingUsername = ["admin", "user", "john"];
+  const checkIfUsernameExists = async (username) => {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    return existingUsername.includes(username);
   };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-    if (errors[name]) {
-      const newErrors = { ...errors };
-      delete newErrors[name];
-      setErrors(newErrors);
-    }
-  };
+  // console.log(watch("name"));
   return (
     <div className="div">
       <h2>Forms in React </h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <label>
           Name:
           <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
+            {...register("name", {
+              required: "Name is required!",
+              validate: {
+                checkUsername: async (value) => {
+                  const exist = await checkIfUsernameExists(value);
+                  return !exist || "Username already taken!";
+                },
+              },
+              minLength: {
+                value: 2,
+                message: "Name must have atleast 2 chars!",
+              },
+            })}
           />
-          {errors.name && <span style={{ color: "red" }}>{errors.name}</span>}
         </label>
+        {errors.name && <p>{errors.name.message}</p>}
         <br />
         <label>
           Email:
           <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
+            {...register("email", {
+              required: true,
+              pattern:
+                /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/,
+            })}
           />
         </label>
+        {errors.email && <p>Invalid email format.</p>}
+
+        <br />
+        <label>
+          Password:
+          <input
+            type="password"
+            {...register("password", {
+              required: true,
+              minLength: 2,
+            })}
+          />
+        </label>
+        {errors.password && <p>Password must be atleast 2 chars.</p>}
+
+        <br />
+        <label>
+          Confirm Password:
+          <input
+            type="password"
+            {...register("confirmPassword", {
+              required: true,
+              minLength: 2,
+              validate: (value) =>
+                value === watch("password") || "Password do not match",
+            })}
+          />
+        </label>
+        {errors.confirmPassword && <p>{errors.confirmPassword.message}</p>}
+
         <br />
 
         <button type="submit"> Submit</button>
+        <button type="button" onClick={() => reset()}>
+          {" "}
+          Reset
+        </button>
       </form>
     </div>
   );
